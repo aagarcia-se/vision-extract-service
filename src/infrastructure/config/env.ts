@@ -4,6 +4,8 @@ import { z } from 'zod';
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   PORT: z.coerce.number().int().positive().default(3000),
+  TURSO_DATABASE_URL: z.string().min(1, 'TURSO_DATABASE_URL es requerido'),
+  TURSO_AUTH_TOKEN: z.string().min(1, 'TURSO_AUTH_TOKEN es requerido'),
 });
 
 const parsed = envSchema.safeParse(process.env);

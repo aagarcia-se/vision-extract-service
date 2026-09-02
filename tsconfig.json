@@ -29,7 +29,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
 
-    /* Alias de rutas por capa (ya no necesitan baseUrl) */
+    /* Alias de rutas por capa (autosuficientes, sin baseUrl) */
     "paths": {
       "@domain/*": ["./src/domain/*"],
       "@application/*": ["./src/application/*"],

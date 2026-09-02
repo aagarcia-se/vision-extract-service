@@ -7,7 +7,7 @@ const globals = require('globals');
 module.exports = [
   // 1. Qué se ignora globalmente
   {
-    ignores: ['dist/**', 'node_modules/**', 'coverage/**'],
+    ignores: ['dist/**', 'node_modules/**', 'coverage/**', 'prisma.config.ts'],
   },
 
   // 2. Reglas base de ESLint (JS puro)
