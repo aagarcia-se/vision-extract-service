@@ -12,9 +12,7 @@
     "build": "tsc && tsc-alias",
     "start": "node dist/main.js",
     "lint": "eslint .",
-    "test": "vitest",
-    "postinstall": "prisma generate",
-    "db:migrate": "prisma migrate dev"
+    "test": "vitest"
   },
   "repository": {
     "type": "git",
@@ -29,10 +27,9 @@
   },
   "homepage": "https://github.com/aagarcia-se/vision-extract-service#readme",
   "dependencies": {
-    "@google-cloud/vision": "^6.0.0",
-    "@libsql/client": "0.17.4",
-    "@prisma/adapter-libsql": "7.10.0",
-    "@prisma/client": "7.10.0",
+    "@anthropic-ai/sdk": "^0.123.0",
+    "@google/genai": "^2.20.0",
+   "@libsql/client": "^0.14.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
@@ -41,6 +38,7 @@
     "multer": "^2.3.0",
     "pino": "^10.3.1",
     "pino-http": "^11.0.0",
+    "sharp": "^0.35.4",
     "zod": "^4.5.4"
   },
   "devDependencies": {
@@ -56,7 +54,6 @@
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.12.0",
     "prettier": "^3.9.6",
-    "prisma": "7.10.0",
     "supertest": "^7.2.2",
     "tsc-alias": "^1.9.3",
     "tsx": "^4.23.13",
