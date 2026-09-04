@@ -45,6 +45,7 @@ export class ExtractBakerySalesUseCase {
         extractionId,
         error instanceof Error ? error.message : 'Error desconocido',
       );
+
       throw error;
     }
   }
