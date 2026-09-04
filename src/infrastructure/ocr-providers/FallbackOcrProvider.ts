@@ -43,14 +43,14 @@ export class FallbackOcrProvider implements IOcrProvider {
               failedProviders: failedAttempts.map((attempt) => attempt.provider),
               succeededWith: provider.name,
             },
-            `Extraccion recuperada por fallback — funciono con "${provider.name}"`,
+            `Extraccion recuperada por fallback - funciono con "${provider.name}"`,
           );
         }
 
         return result;
       } catch (error) {
         logger.error(
-          { provider: provider.name, err: error },
+          //{ provider: provider.name, err: error },
           `El proveedor "${provider.name}" fallo al procesar la imagen`,
         );
         failedAttempts.push({ provider: provider.name, error });

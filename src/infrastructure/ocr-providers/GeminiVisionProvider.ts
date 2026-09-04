@@ -6,7 +6,8 @@ import type {
   OcrExtractionResult,
 } from '@domain/ports/IOcrProvider';
 
-const GEMINI_MODEL = 'gemini-2.5-flash';
+// Recuerda: si te da error 404 o 503, cambia esto a 'gemini-1.5-flash'
+const GEMINI_MODEL = 'gemini-2.5-flash'; 
 
 export class GeminiVisionProvider implements IOcrProvider {
   readonly name = 'gemini';
@@ -22,7 +23,11 @@ export class GeminiVisionProvider implements IOcrProvider {
         // modelo puede leer el mismo documento con distinto nivel de
         // detalle entre una llamada y otra (ej. truncar un nombre largo).
         // En 0 se reduce esa variacion al minimo.
-        config: { temperature: 0 },
+        config: { 
+          temperature: 0,
+          // 1. AGREGA ESTO para evitar los backticks (```json)
+          responseMimeType: 'application/json' 
+        },
         contents: [
           {
             inlineData: {
@@ -40,7 +45,11 @@ export class GeminiVisionProvider implements IOcrProvider {
         throw new Error('Gemini no devolvio contenido de texto en la respuesta.');
       }
 
-      return { rawText: text, providerName: this.name };
+      // 2. AGREGA ESTO para que el JSON quede ordenado con saltos de línea
+      const parsedData = JSON.parse(text);
+      const formattedText = JSON.stringify(parsedData, null, 2);
+
+      return { rawText: formattedText, providerName: this.name };
     } catch (error) {
       throw new OcrExtractionError(`Fallo la extraccion con ${this.name}`, { cause: error });
     }
