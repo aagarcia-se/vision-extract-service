@@ -13,8 +13,12 @@ export function errorHandler(err: Error, req: Request, res: Response, _next: Nex
   }
 
   if (err instanceof TemplateValidationError) {
+    // "context" (rawText, parsedJson) se loguea como propiedad de primer
+    // nivel a proposito — el serializador de errores de pino no navega
+    // objetos anidados dentro de "cause", asi que ponerlo aparte
+    // garantiza que se vea en consola.
     logger.warn(
-      { err, path: req.path },
+      { err, context: err.context, path: req.path },
       'La respuesta del modelo no cumplio el contrato esperado',
     );
     res.status(422).json({ error: { message: err.message } });

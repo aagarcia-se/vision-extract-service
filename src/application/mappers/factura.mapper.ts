@@ -5,15 +5,19 @@ import {
 import { TemplateValidationError } from '@domain/errors/TemplateValidationError';
 
 /**
- * Chequeo de respaldo: si, aun cuando el modelo dijo esFactura=true, los
- * campos clave estan todos vacios/en su valor "no legible", se trata
- * como no-factura de todas formas. No confiamos ciegamente en la
+ * Chequeo de respaldo: si, aun cuando el modelo dijo esFactura=true, no
+ * hay NADA util (ni datos de compra ni del receptor), se trata como
+ * no-factura de todas formas. No confiamos ciegamente en la
  * autoevaluacion del modelo.
+ *
+ * OJO: esto NO rechaza facturas parciales/cortadas que si tengan
+ * productos o receptor identificados, aunque falten datos del emisor —
+ * ese caso es valido a proposito (ver factura.prompt.ts).
  */
 function isEffectivelyEmpty(data: FacturaExtraction): boolean {
   return (
-    data.nit === '' &&
-    data.numeroFactura === '' &&
+    data.nitReceptor === '' &&
+    data.nombreReceptor === '' &&
     data.productos.length === 0 &&
     data.total === -1
   );
@@ -33,7 +37,7 @@ export function mapRawTextToFacturaExtraction(rawText: string): FacturaExtractio
   } catch (error) {
     throw new TemplateValidationError(
       'La respuesta del proveedor de vision no es un JSON valido.',
-      { cause: { parseError: error, rawText } },
+      { cause: error, context: { rawText } },
     );
   }
 
@@ -42,13 +46,14 @@ export function mapRawTextToFacturaExtraction(rawText: string): FacturaExtractio
   if (!result.success) {
     throw new TemplateValidationError(
       'La respuesta no cumple el contrato esperado para el template "factura".',
-      { cause: result.error },
+      { cause: result.error, context: { rawText, parsedJson } },
     );
   }
 
   if (!result.data.esFactura || isEffectivelyEmpty(result.data)) {
     throw new TemplateValidationError(
       'La imagen no parece corresponder a una factura de compra.',
+      { context: { rawText } },
     );
   }
 

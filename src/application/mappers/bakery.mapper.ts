@@ -17,7 +17,7 @@ export function mapRawTextToBakeryExtraction(rawText: string): BakeryExtraction 
   } catch (error) {
     throw new TemplateValidationError(
       'La respuesta del proveedor de vision no es un JSON valido.',
-      { cause: { parseError: error, rawText } },
+      { cause: error, context: { rawText } },
     );
   }
 
@@ -26,7 +26,7 @@ export function mapRawTextToBakeryExtraction(rawText: string): BakeryExtraction 
   if (!result.success) {
     throw new TemplateValidationError(
       'La respuesta no cumple el contrato esperado para el template "bakery".',
-      { cause: result.error },
+      { cause: result.error, context: { rawText, parsedJson } },
     );
   }
 
