@@ -54,6 +54,21 @@ export class ClaudeVisionProvider implements IOcrProvider {
         // un documento, no generacion creativa. Reduce la variacion de
         // una llamada a otra sobre la misma imagen.
         temperature: 0,
+        // El prompt de instrucciones es identico en todas las llamadas
+        // (solo cambia la imagen), asi que va en `system` con cache_control
+        // en vez de mezclado en el content del user. Esto permite que la
+        // API cachee este bloque: en llamadas siguientes dentro del TTL
+        // (5 min por defecto) se factura al 10% del precio normal de
+        // input tokens. Requiere ~1024 tokens minimo en el bloque para
+        // que el cache se active (si el prompt es mas corto, simplemente
+        // no cachea, sin error ni penalizacion).
+        system: [
+          {
+            type: 'text',
+            text: prompt,
+            cache_control: { type: 'ephemeral' },
+          },
+        ],
         messages: [
           {
             role: 'user',
@@ -66,10 +81,6 @@ export class ClaudeVisionProvider implements IOcrProvider {
                   data: imageBuffer.toString('base64'),
                 },
               },
-              {
-                type: 'text',
-                text: prompt,
-              },
             ],
           },
         ],
@@ -80,6 +91,11 @@ export class ClaudeVisionProvider implements IOcrProvider {
       if (!firstBlock || firstBlock.type !== 'text') {
         throw new Error('Claude no devolvio un bloque de texto en la respuesta.');
       }
+
+      // Utiles para confirmar en logs/metricas que el cache realmente esta
+      // pegando. cache_read_input_tokens > 0 en una llamada = hit.
+      // cache_creation_input_tokens > 0 = fue la llamada que escribio el cache.
+      // Ambos vienen en response.usage.
 
       return { rawText: firstBlock.text, providerName: this.name };
     } catch (error) {
