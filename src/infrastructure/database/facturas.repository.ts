@@ -1,14 +1,16 @@
 import { randomUUID } from 'node:crypto';
 import { tursoClient } from './turso-client';
+import { nowInAppTimezone } from '@shared/utils/timestamps';
 import type { FacturaExtraction } from '@application/templates/factura/factura.schema';
 
 export async function createFactura(clientId: string): Promise<string> {
   const id = randomUUID();
+  const timestamp = nowInAppTimezone();
 
   await tursoClient.execute({
     sql: `INSERT INTO facturas (id, clientId, status, createdAt, updatedAt)
-          VALUES (?, ?, 'PENDING', datetime('now'), datetime('now'))`,
-    args: [id, clientId],
+          VALUES (?, ?, 'PENDING', ?, ?)`,
+    args: [id, clientId, timestamp, timestamp],
   });
 
   return id;
@@ -34,7 +36,7 @@ export async function markFacturaCompleted(
               total = ?,
               productos = ?,
               rawResult = ?,
-              updatedAt = datetime('now')
+              updatedAt = ?
           WHERE id = ?`,
     args: [
       providerName,
@@ -48,6 +50,7 @@ export async function markFacturaCompleted(
       mappedResult.total,
       JSON.stringify(mappedResult.productos),
       rawResult,
+      nowInAppTimezone(),
       id,
     ],
   });
@@ -56,9 +59,9 @@ export async function markFacturaCompleted(
 export async function markFacturaFailed(id: string, errorMessage: string): Promise<void> {
   await tursoClient.execute({
     sql: `UPDATE facturas
-          SET status = 'FAILED', errorMessage = ?, updatedAt = datetime('now')
+          SET status = 'FAILED', errorMessage = ?, updatedAt = ?
           WHERE id = ?`,
-    args: [errorMessage, id],
+    args: [errorMessage, nowInAppTimezone(), id],
   });
 }
 
@@ -77,7 +80,7 @@ export async function saveFacturaImage(
 
   await tursoClient.execute({
     sql: `INSERT INTO facturas_imagenes (id, facturaId, imagenBase64, mimeType, createdAt)
-          VALUES (?, ?, ?, ?, datetime('now'))`,
-    args: [id, facturaId, imagenBase64, mimeType],
+          VALUES (?, ?, ?, ?, ?)`,
+    args: [id, facturaId, imagenBase64, mimeType, nowInAppTimezone()],
   });
 }

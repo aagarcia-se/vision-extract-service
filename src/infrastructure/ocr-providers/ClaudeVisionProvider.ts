@@ -8,6 +8,13 @@ import type {
 
 const CLAUDE_MODEL = 'claude-sonnet-4-6';
 
+// 1024 alcanzaba para bakery (dos columnas simples), pero una factura con
+// muchos productos + los campos nuevos (receptor, fecha/hora normalizadas)
+// puede generar un JSON mas largo. Si se corta a mitad de la respuesta,
+// el JSON queda invalido y falla el parseo aunque la imagen se haya leido
+// bien — subir el limite evita ese falso negativo.
+const MAX_OUTPUT_TOKENS = 4096;
+
 const SUPPORTED_IMAGE_MEDIA_TYPES = [
   'image/jpeg',
   'image/png',
@@ -42,7 +49,7 @@ export class ClaudeVisionProvider implements IOcrProvider {
 
       const response = await this.client.messages.create({
         model: CLAUDE_MODEL,
-        max_tokens: 1024,
+        max_tokens: MAX_OUTPUT_TOKENS,
         messages: [
           {
             role: 'user',

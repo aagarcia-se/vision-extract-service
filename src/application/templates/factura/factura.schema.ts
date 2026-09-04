@@ -25,6 +25,16 @@ export const FacturaProductoSchema = z.object({
  * - Campos de texto: cadena vacia "" si no se puede leer con claridad.
  */
 export const FacturaExtractionSchema = z.object({
+  /**
+   * El modelo se autoevalua: true si la imagen realmente parece una
+   * factura de compra, false si no (otra foto, documento distinto,
+   * demasiado ilegible para reconocerla como tal). Sirve como primera
+   * señal de que la imagen no era del tipo esperado — el mapper la usa
+   * para decidir si esto debe tratarse como un error, no como un
+   * resultado exitoso con todo vacio.
+   */
+  esFactura: z.boolean(),
+
   /** Numero de Identificacion Tributaria del negocio que emite la factura. */
   nit: z.string(),
 
@@ -47,11 +57,24 @@ export const FacturaExtractionSchema = z.object({
   /** Numero o folio de la factura. */
   numeroFactura: z.string(),
 
-  /** Fecha de emision, tal como aparece en la factura. */
-  fecha: z.string(),
+  /**
+   * Fecha de emision, SIEMPRE normalizada a formato ISO "YYYY-MM-DD"
+   * (independientemente de como venga escrita en la factura), para que
+   * sea directamente ordenable/filtrable en consultas SQL. Cadena vacia
+   * si no se pudo leer con claridad.
+   */
+  fecha: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$|^$/, 'fecha debe ser YYYY-MM-DD (o vacia si no es legible)'),
 
-  /** Hora de emision, tal como aparece en la factura (vacia si no aparece). */
-  hora: z.string(),
+  /**
+   * Hora de emision, SIEMPRE normalizada a formato 24 horas "HH:MM:SS"
+   * (si la factura no trae segundos, se completa con "00"). Cadena vacia
+   * si no se pudo leer con claridad.
+   */
+  hora: z
+    .string()
+    .regex(/^\d{2}:\d{2}:\d{2}$|^$/, 'hora debe ser HH:MM:SS (o vacia si no es legible)'),
 
   /** Todos los productos/servicios facturados. */
   productos: z.array(FacturaProductoSchema),
