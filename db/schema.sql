@@ -33,8 +33,10 @@ CREATE TABLE facturas (
   id             TEXT PRIMARY KEY,
   clientId       TEXT NOT NULL,
   provider       TEXT,                           -- 'gemini' o 'claude'
-  nit            TEXT,
-  nombreEmisor   TEXT,
+  nit            TEXT,                            -- NIT del EMISOR
+  nombreEmisor   TEXT,                            -- Nombre/razon social del EMISOR
+  nitReceptor    TEXT,                            -- NIT de quien compra ('CF' si es consumidor final)
+  nombreReceptor TEXT,                            -- Nombre de quien compra ('CONSUMIDOR FINAL' si aplica)
   numeroFactura  TEXT,
   fecha          TEXT,
   hora           TEXT,
@@ -50,6 +52,7 @@ CREATE TABLE facturas (
 CREATE INDEX idx_facturas_clientId ON facturas(clientId);
 CREATE INDEX idx_facturas_status ON facturas(status);
 CREATE INDEX idx_facturas_nit ON facturas(nit);
+CREATE INDEX idx_facturas_nitReceptor ON facturas(nitReceptor);
 
 
 -- ============================================================
@@ -75,3 +78,5 @@ CREATE INDEX idx_facturas_imagenes_facturaId ON facturas_imagenes(facturaId);
 -- usa esto en lugar de los DROP+CREATE de "extractions" y "facturas":
 -- ============================================================
 -- ALTER TABLE extractions ADD COLUMN provider TEXT;
+-- ALTER TABLE facturas ADD COLUMN nitReceptor TEXT;
+-- ALTER TABLE facturas ADD COLUMN nombreReceptor TEXT;

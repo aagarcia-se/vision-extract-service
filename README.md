@@ -118,6 +118,8 @@ Respuesta (200):
 {
   "nit": "1234567-8",
   "nombreEmisor": "Panaderia El Trigo",
+  "nitReceptor": "CF",
+  "nombreReceptor": "CONSUMIDOR FINAL",
   "numeroFactura": "FAC-00123",
   "fecha": "01/09/2026",
   "hora": "14:32",

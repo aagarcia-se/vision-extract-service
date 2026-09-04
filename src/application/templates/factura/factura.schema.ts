@@ -31,6 +31,19 @@ export const FacturaExtractionSchema = z.object({
   /** Nombre o razon social del negocio que emite la factura. */
   nombreEmisor: z.string(),
 
+  /**
+   * NIT de quien realiza la compra (el receptor/cliente). Normalizado a
+   * "CF" cuando la factura indica consumidor final (sin importar si en
+   * la hoja aparece como "C/F", "c.f.", "CF", etc.).
+   */
+  nitReceptor: z.string(),
+
+  /**
+   * Nombre de quien realiza la compra. Normalizado a "CONSUMIDOR FINAL"
+   * cuando la factura no identifica a un comprador especifico.
+   */
+  nombreReceptor: z.string(),
+
   /** Numero o folio de la factura. */
   numeroFactura: z.string(),
 
