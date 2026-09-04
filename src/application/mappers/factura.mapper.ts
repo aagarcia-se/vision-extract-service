@@ -33,7 +33,7 @@ export function mapRawTextToFacturaExtraction(rawText: string): FacturaExtractio
   } catch (error) {
     throw new TemplateValidationError(
       'La respuesta del proveedor de vision no es un JSON valido.',
-      { cause: error },
+      { cause: { parseError: error, rawText } },
     );
   }
 

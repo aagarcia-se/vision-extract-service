@@ -17,7 +17,7 @@ export function mapRawTextToBakeryExtraction(rawText: string): BakeryExtraction 
   } catch (error) {
     throw new TemplateValidationError(
       'La respuesta del proveedor de vision no es un JSON valido.',
-      { cause: error },
+      { cause: { parseError: error, rawText } },
     );
   }
 
