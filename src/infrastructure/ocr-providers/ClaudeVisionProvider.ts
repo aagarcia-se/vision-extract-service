@@ -50,6 +50,10 @@ export class ClaudeVisionProvider implements IOcrProvider {
       const response = await this.client.messages.create({
         model: CLAUDE_MODEL,
         max_tokens: MAX_OUTPUT_TOKENS,
+        // temperature 0: misma razon que en Gemini — lectura literal de
+        // un documento, no generacion creativa. Reduce la variacion de
+        // una llamada a otra sobre la misma imagen.
+        temperature: 0,
         messages: [
           {
             role: 'user',

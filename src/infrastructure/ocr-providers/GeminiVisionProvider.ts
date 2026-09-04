@@ -17,6 +17,12 @@ export class GeminiVisionProvider implements IOcrProvider {
     try {
       const response = await this.client.models.generateContent({
         model: GEMINI_MODEL,
+        // temperature 0: esta es una tarea de lectura literal, no de
+        // generacion creativa. Con la temperatura default, el mismo
+        // modelo puede leer el mismo documento con distinto nivel de
+        // detalle entre una llamada y otra (ej. truncar un nombre largo).
+        // En 0 se reduce esa variacion al minimo.
+        config: { temperature: 0 },
         contents: [
           {
             inlineData: {

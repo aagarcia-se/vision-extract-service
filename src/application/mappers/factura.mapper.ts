@@ -3,6 +3,8 @@ import {
   type FacturaExtraction,
 } from '@application/templates/factura/factura.schema';
 import { TemplateValidationError } from '@domain/errors/TemplateValidationError';
+import { stripMarkdownCodeFence } from '@shared/utils/json-extraction';
+import { logger } from '@infrastructure/logger/logger';
 
 /**
  * Chequeo de respaldo: si, aun cuando el modelo dijo esFactura=true, no
@@ -30,14 +32,23 @@ function isEffectivelyEmpty(data: FacturaExtraction): boolean {
  * imagen no es una factura (o efectivamente no extrajo nada util).
  */
 export function mapRawTextToFacturaExtraction(rawText: string): FacturaExtraction {
+  const cleanedText = stripMarkdownCodeFence(rawText);
+
+  if (cleanedText !== rawText.trim()) {
+    logger.debug(
+      { rawText },
+      'El proveedor envolvio la respuesta en markdown; se limpio antes de parsear',
+    );
+  }
+
   let parsedJson: unknown;
 
   try {
-    parsedJson = JSON.parse(rawText);
+    parsedJson = JSON.parse(cleanedText);
   } catch (error) {
     throw new TemplateValidationError(
       'La respuesta del proveedor de vision no es un JSON valido.',
-      { cause: error, context: { rawText } },
+      { cause: error, context: { rawText, cleanedText } },
     );
   }
 
