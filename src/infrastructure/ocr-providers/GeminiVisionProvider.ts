@@ -24,18 +24,21 @@ export class GeminiVisionProvider implements IOcrProvider {
         // detalle entre una llamada y otra (ej. truncar un nombre largo).
         // En 0 se reduce esa variacion al minimo.
         config: { 
+          // temperature 0: reduce la variación al mínimo para tareas de lectura literal.
           temperature: 0,
-          // 1. AGREGA ESTO para evitar los backticks (```json)
-          responseMimeType: 'application/json' 
+          // Evita los backticks (```json) y fuerza una respuesta limpia
+          responseMimeType: 'application/json',
+          // Pasamos el prompt como regla del sistema para mayor obediencia
+          systemInstruction: prompt
         },
         contents: [
           {
+            // Solo enviamos la imagen en el contenido
             inlineData: {
               mimeType,
               data: imageBuffer.toString('base64'),
             },
           },
-          { text: prompt },
         ],
       });
 
@@ -45,7 +48,7 @@ export class GeminiVisionProvider implements IOcrProvider {
         throw new Error('Gemini no devolvio contenido de texto en la respuesta.');
       }
 
-      // 2. AGREGA ESTO para que el JSON quede ordenado con saltos de línea
+      // Ordenamos el JSON con saltos de línea e indentación
       const parsedData = JSON.parse(text);
       const formattedText = JSON.stringify(parsedData, null, 2);
 
