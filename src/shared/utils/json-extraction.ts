@@ -12,5 +12,5 @@ export function stripMarkdownCodeFence(text: string): string {
   const trimmed = text.trim();
   const codeFenceMatch = /^```(?:json)?\s*\n([\s\S]*?)\n?```$/i.exec(trimmed);
 
-  return codeFenceMatch ? codeFenceMatch[1].trim() : trimmed;
+  return codeFenceMatch?.[1]?.trim() ?? trimmed;
 }

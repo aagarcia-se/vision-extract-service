@@ -9,7 +9,7 @@
  * de primer nivel garantiza que se pueda loguear (ver errorHandler.ts).
  */
 export class TemplateValidationError extends Error {
-  readonly context?: Record<string, unknown>;
+  readonly context?: Record<string, unknown> | undefined;
 
   constructor(
     message: string,
