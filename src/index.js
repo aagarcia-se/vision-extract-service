@@ -1,4 +1,4 @@
 // api/index.mjs
-import { createServer } from '../dist/create-server';
+import { createServer } from '../dist/create-server.js';
 
-createServer();
+export default createServer();
