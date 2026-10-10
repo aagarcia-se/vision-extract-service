@@ -10,8 +10,6 @@ import { extractBakerySalesUseCase, extractFacturaUseCase } from './container';
 export function createServer(): Application {
   const app = express();
 
-  app.set('trust proxy', 1);
-
   app.use(helmet());
   app.use(cors());
   app.use(express.json());
@@ -20,6 +18,7 @@ export function createServer(): Application {
   app.use(createExtractBakeryRouter(extractBakerySalesUseCase));
   app.use(createExtractFacturaRouter(extractFacturaUseCase));
 
+  // Middleware de errores: siempre al final
   app.use(errorHandler);
 
   return app;
