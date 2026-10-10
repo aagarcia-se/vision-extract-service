@@ -1,4 +1,4 @@
-import { createServer } from './create-server';
+import { createServer } from './server';
 import { env } from '@infrastructure/config/env';
 import { logger } from '@infrastructure/logger/logger';
 
