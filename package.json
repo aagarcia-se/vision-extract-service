@@ -2,7 +2,7 @@
   "name": "vision-extract-service",
   "version": "1.0.0",
   "description": "Servicio backend para leer fotos de hojas via servicios cloud de OCR/vision y devolver un JSON estructurado por cliente",
-  "main": "dist/main.js",
+  "main": "dist/main.ts",
   "private": true,
   "engines": {
     "node": ">=22.13.0"

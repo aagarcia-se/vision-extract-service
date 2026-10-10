@@ -7,7 +7,7 @@ import type {
 } from '@domain/ports/IOcrProvider';
 
 // Recuerda: si te da error 404 o 503, cambia esto a 'gemini-1.5-flash'
-const GEMINI_MODEL = 'gemini-2.5-flash'; 
+const GEMINI_MODEL = 'gemini-3.1-flash-lite'; 
 
 export class GeminiVisionProvider implements IOcrProvider {
   readonly name = 'gemini';

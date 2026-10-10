@@ -50,8 +50,8 @@ export class FallbackOcrProvider implements IOcrProvider {
         return result;
       } catch (error) {
         logger.error(
-          //{ provider: provider.name, err: error },
-          `El proveedor "${provider.name}" fallo al procesar la imagen`,
+          { provider: provider.name, err: error },
+          `El proveedor "${provider.name}" fallo al procesar la imagen`
         );
         failedAttempts.push({ provider: provider.name, error });
       }
